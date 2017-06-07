@@ -163,11 +163,11 @@ def convert_phone_number(number):
 			result += "-"
 	return result
 
-def url_shortener(url):
+def url_shortener(url_str):
 	url = service.url()
 
   # Create a shortened URL by inserting the URL into the url collection.
-  body = {'longUrl': url }
+  body = {'longUrl': url_str }
   resp = url.insert(body=body).execute()
 
   return resp['id']
