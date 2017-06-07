@@ -59,10 +59,11 @@ def send_group():
 		numbers = person["numbers"]
 		mobile = numbers[0]["num"]
 
+		vcard_filename = fname + "." + lname + "." + mobile + ".vcf"
+		vcard_filenames.append(vcard_filename)
+
 		if mms_enabled:
 			vcard_str = create_vcard_str(fname, lname, numbers)
-			vcard_filename = fname + "." + lname + "." + mobile + ".vcf"
-			vcard_filenames.append(vcard_filename)
 
 			vcard_file = open("/tmp/" + vcard_filename, "w")
 			vcard_file.write(vcard_str)
