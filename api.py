@@ -16,7 +16,6 @@ AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
 
-shortener = Shortener("Tinyurl")
 app = Flask(__name__, static_url_path="")
 
 @app.route("/api/send-group", methods=['POST'])
@@ -113,7 +112,7 @@ def send_group():
 					media_url="https://s3.amazonaws.com/carbonhackathon-quircl/" + filename)
 			else:
 				contact_text += next_fname + " " + next_lname + "\n" + convert_phone_number(next_mobile)
-				contact_text += "vCard: " + url_shortener("https://s3.amazonaws.com/carbonhackathon-quircl/" + filename) + "\n\n"
+				contact_text += "\nvCard: " + url_shortener("https://s3.amazonaws.com/carbonhackathon-quircl/" + filename) + "\n\n"
 
 		if not mms_enabled:
 			twilio_client.messages.create(
@@ -159,11 +158,12 @@ def convert_phone_number(number):
 	result = ""
 	for i in range(10):
 		result += number[i]
-		if result == 2 or result == 5:
+		if i == 2 or i == 5:
 			result += "-"
 	return result
 
 def url_shortener(url):
+	shortener = Shortener("Isgd")
 	return shortener.short(url)
 
 
