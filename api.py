@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, abort, make_response, request
 from twilio.rest import Client
-from googleapiclient import sample_tools
+from pyshorteners import Shortener
 
 import tinys3
 import os
 import time
-import sys
+import json
+import requests
 
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -15,6 +16,7 @@ AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
 
+shortener = Shortener("Tinyurl")
 app = Flask(__name__, static_url_path="")
 
 @app.route("/api/send-group", methods=['POST'])
@@ -161,19 +163,8 @@ def convert_phone_number(number):
 			result += "-"
 	return result
 
-def url_shortener(url_str):
-	service, flags = sample_tools.init(
-	      sys.argv, 'urlshortener', 'v1', __doc__, __file__,
-	      scope='https://www.googleapis.com/auth/urlshortener')
-
-	url = service.url()
-
-	# Create a shortened URL by inserting the URL into the url collection.
-	body = {'longUrl': url_str }
-	resp = url.insert(body=body).execute()
-
-	return resp['id']
-
+def url_shortener(url):
+	return shortener.short(url)
 
 
 if __name__ == '__main__':
