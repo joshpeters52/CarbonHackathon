@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, abort, make_response, request
 from twilio.rest import Client
+from googleapiclient import sample_tools
+
 import tinys3
 import os
 import time
-
-#hello world
 
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -14,6 +14,10 @@ AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
 
+service, flags = sample_tools.init(
+      argv, 'urlshortener', 'v1', __doc__, __file__,
+      scope='https://www.googleapis.com/auth/urlshortener')
+
 app = Flask(__name__, static_url_path="")
 
 @app.route("/api/send-group", methods=['POST'])
@@ -22,6 +26,14 @@ def send_group():
 
 	if "group" not in req_data:
 		return req_err("No 'group' field in request data")
+	elif "mms" not in req_data:
+		return req_err("No 'mms' field in request data")
+
+	# mms enabled?
+	# hellellelejlej;lw
+	# q;ljlkefjlkwejf
+	# klwefjlkwejlkfjwe
+	mms_enabled = req_data["mms"]
 
 	vcard_filenames = []
 
@@ -51,22 +63,24 @@ def send_group():
 		numbers = person["numbers"]
 		mobile = numbers[0]["num"]
 
-		vcard_str = create_vcard_str(fname, lname, numbers)
-		vcard_filename = fname + "." + lname + "." + mobile + ".vcf"
-		vcard_filenames.append(vcard_filename)
+		if mms_enabled:
+			vcard_str = create_vcard_str(fname, lname, numbers)
+			vcard_filename = fname + "." + lname + "." + mobile + ".vcf"
+			vcard_filenames.append(vcard_filename)
 
-		vcard_file = open("/tmp/" + vcard_filename, "w")
-		vcard_file.write(vcard_str)
-		vcard_file.close()
+			vcard_file = open("/tmp/" + vcard_filename, "w")
+			vcard_file.write(vcard_str)
+			vcard_file.close()
 
-	s3_pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True, size=len(req_data["group"]))
+	if mms_enabled:
+		s3_pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True, size=len(req_data["group"]))
 
-	uploads = []
-	for i in range(len(req_data["group"])):
-		vcard_file = open("/tmp/" + vcard_filenames[i], "rb")
-		uploads.append(s3_pool.upload(vcard_filenames[i], vcard_file, AWS_S3_BUCKET))
+		uploads = []
+		for i in range(len(req_data["group"])):
+			vcard_file = open("/tmp/" + vcard_filenames[i], "rb")
+			uploads.append(s3_pool.upload(vcard_filenames[i], vcard_file, AWS_S3_BUCKET))
 
-	s3_pool.all_completed(uploads)
+		s3_pool.all_completed(uploads)
 
 	twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -80,6 +94,8 @@ def send_group():
 			from_=TWILIO_FROM_NUMBER,
 			body="Quircl's magic is brewing... Your contacts will be here shortly!")
 
+		contact_text = ""
+
 		for filename in vcard_filenames:
 			split = filename.split(".")
 			next_fname = split[0]
@@ -89,11 +105,21 @@ def send_group():
 			if next_fname == fname and next_lname == lname and next_mobile == mobile:
 				continue
 
-			time.sleep(2)
-			message = twilio_client.messages.create(
+			if mms_enabled:
+				time.sleep(1)
+				message = twilio_client.messages.create(
+					to="+1" + mobile,
+					from_=TWILIO_FROM_NUMBER,
+					media_url="https://s3.amazonaws.com/carbonhackathon-quircl/" + filename)
+			else:
+				contact_text += next_fname + " " + next_lname + "\n" + convert_phone_number(next_mobile)
+				contact_text += "vCard: " + url_shortener(filename) + "\n\n"
+
+		if not mms_enabled:
+			twilio_client.messages.create(
 				to="+1" + mobile,
 				from_=TWILIO_FROM_NUMBER,
-				media_url="https://s3.amazonaws.com/carbonhackathon-quircl/" + filename)
+				body=contact_text + "Thanks for using Quircl!")
 
 
 
@@ -128,6 +154,25 @@ def create_vcard_str(fname, lname, numbers):
 	for number in numbers:
 		result += "TEL;" + number["type"].upper() + ":+1" + number["num"] + "\n"
 	return result + "END:VCARD"
+
+def convert_phone_number(number):
+	result = ""
+	for i in range(10):
+		result += number[i]
+		if result == 2 or result == 5:
+			result += "-"
+	return result
+
+def url_shortener(url):
+	url = service.url()
+
+  # Create a shortened URL by inserting the URL into the url collection.
+  body = {'longUrl': url }
+  resp = url.insert(body=body).execute()
+
+  return resp['id']
+
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
