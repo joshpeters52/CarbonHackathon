@@ -5,6 +5,7 @@ from googleapiclient import sample_tools
 import tinys3
 import os
 import time
+import sys
 
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -162,7 +163,7 @@ def convert_phone_number(number):
 
 def url_shortener(url_str):
 	service, flags = sample_tools.init(
-	      argv, 'urlshortener', 'v1', __doc__, __file__,
+	      sys.argv, 'urlshortener', 'v1', __doc__, __file__,
 	      scope='https://www.googleapis.com/auth/urlshortener')
 
 	url = service.url()
