@@ -242,7 +242,7 @@ def generate_quircl():
 		"A Squirtle and a Quircle walk into a bar...",
 		"If you or a loved one have been diagnosed with Quircle-syndrome... then that's just awesome."
 		"Quircle Quircle Quircle Quircle Quircle Quircle Quircle Quircle."
-		]
+	]
 
 	return quircls[random.randint(0, len(quircls) - 1)]
 
