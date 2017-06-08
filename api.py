@@ -190,7 +190,7 @@ def send_group():
 			twilio_client.messages.create(
 				to="+1" + mobile,
 				from_=TWILIO_FROM_NUMBER,
-				body=contact_text + "Thanks for using Quircl!")
+				body=contact_text + "Thanks for using Quircle!")
 
 	return jsonify({ "success": True, "data": "Contacts successfully transmitted" }), 200
 
@@ -223,25 +223,25 @@ def url_shortener(url):
 
 def generate_quircl():
 	quircls = [ 
-		"Quircl's magic is brewing...",
-		"Quircl says, \"Hang tight earthling!\"",
-		"1,238 Quircls are hard at work!",
-		"Quircl is making the jump to hyperspace...",
-		"\"Houston we have NO problems,\" Quircl explains.",
-		"Quircl is readying the ignition...",
-		"\"'Patience you must have.'\n-Yoda\"\n-Quircl",
-		"How many Quircls does it take to get your contacts?",
-		"The platypus is a distant relative of the Quircl.",
-		"A group of Quircls is a Quircl Circle.",
-		"To Quircl or not to Quircl? That is the question.",
-		"Quircls like long walks on the beach...",
-		"For just 20 cents a day, you can feed a family of Quircls.",
-		"Scientists hate him! Wait to find out what this Quircl did to social circles everywhere!!",
-		"Contrary to popular belief... Quircls actually have 7 arms, not 6.",
-		"Quircls don't care who you voted for.",
-		"A Squirtle and a Quircl walk into a bar...",
-		"If you or a loved one have been diagnosed with Quircl-syndrome... then that's just awesome."
-		"Quircl Quircl Quircl Quircl Quircl Quircl Quircl Quircl."
+		"Quircle's magic is brewing...",
+		"Quircle says, \"Hang tight earthling!\"",
+		"1,238 Quircles are hard at work!",
+		"Quircle is making the jump to hyperspace...",
+		"\"Houston we have NO problems,\" Quircle explains.",
+		"Quircle is readying the ignition...",
+		"\"'Patience you must have.'\n-Yoda\"\n-Quircle",
+		"How many Quircles does it take to get your contacts?",
+		"The platypus is a distant relative of the Quircle.",
+		"A group of Quircles is a Quircle Circle.",
+		"To Quircle or not to Quircle? That is the question.",
+		"Quircles like long walks on the beach...",
+		"For just 20 cents a day, you can feed a family of Quircles.",
+		"Scientists hate him! Wait to find out what this Quircle did to social circles everywhere!!",
+		"Contrary to popular belief... Quircles actually have 7 arms, not 6.",
+		"Quircles don't care who you voted for.",
+		"A Squirtle and a Quircle walk into a bar...",
+		"If you or a loved one have been diagnosed with Quircle-syndrome... then that's just awesome."
+		"Quircle Quircle Quircle Quircle Quircle Quircle Quircle Quircle."
 		]
 
 	return quircls[random.randint(0, len(quircls) - 1)]
