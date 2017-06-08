@@ -88,14 +88,8 @@ def send_group():
 			to="+1" + mobile,
 			from_=TWILIO_FROM_NUMBER,
 			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
-		
-		
-		while message.status != "delivered":
-			print(message.status)
-			pass
 
 		time.sleep(1)
-
 
 		contact_text = ""
 
