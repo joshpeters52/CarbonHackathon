@@ -77,9 +77,9 @@ def get_nearby():
 			dist = calc_dist(lat, lon,  nxt_lat, nxt_lon)
 			if	dist <= NEARBY_THRESHOLD_IN_MILES:
 				nearby_users.append(users[i])
-				print("'" + name + "' and '" + users[i]["name"] + "' are near each other! (" + str(dist) + " ft)")
+				print("'" + name + "' and '" + users[i]["name"] + "' are near each other! (" + str(dist) + " mi)")
 			else:
-				print("'" + name + "' and '" + users[i]["name"] + "' are NOT near each other! (" + str(dist) + " ft)")				
+				print("'" + name + "' and '" + users[i]["name"] + "' are NOT near each other! (" + str(dist) + " mi)")				
 
 	return jsonify({ "success": True, "data": nearby_users }), 200
 
