@@ -61,9 +61,6 @@ def get_nearby():
 	user_json = { "name": name, "number": number, "lat": lat, "lon": lon }
 	user_exists = db.child("users").child(user_id).get(id_token).val() is not None
 
-	print("Does the user exist? " + str(user_exists))
-	print("User information: " + str(user_json))
-
 	if user_exists:
 		db.child("users").child(user_id).update(user_json, id_token)
 	else:
@@ -79,6 +76,10 @@ def get_nearby():
 			
 			if calc_dist(lat, lon,  nxt_lat, nxt_lon):
 				nearby_users.append(users[i])
+				print("'" + name + "' and '" + users[i]["name"] + "' are near each other!")
+
+			else:
+				print("'" + name + "' and '" + users[i]["name"] + "' are NOT near each other!")				
 
 	return jsonify({ "success": True, "data": nearby_users }), 200
 
