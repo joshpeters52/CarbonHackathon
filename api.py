@@ -144,7 +144,7 @@ def convert_phone_number(number):
 	return result
 
 def url_shortener(url):
-	shortener = Shortener("Isgd")
+	shortener = Shortener("Tinyurl")
 	return shortener.short(url)[8:]
 
 
