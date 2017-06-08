@@ -90,7 +90,7 @@ def send_group():
 			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
 		
 		
-		print(message)
+		print(message.delivered)
 		time.sleep(1)
 
 
