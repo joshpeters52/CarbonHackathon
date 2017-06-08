@@ -90,7 +90,9 @@ def send_group():
 			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
 		
 		
-		print(message.status)
+		while message.status != "delivered":
+			pass
+		
 		time.sleep(1)
 
 
