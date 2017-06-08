@@ -145,15 +145,14 @@ def send_group():
 			vcard_file.write(vcard_str)
 			vcard_file.close()
 
-	if mms_enabled:
-		s3_pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True, size=len(req_data["group"]))
+	s3_pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True, size=len(req_data["group"]))
 
-		uploads = []
-		for i in range(len(req_data["group"])):
-			vcard_file = open("/tmp/" + vcard_filenames[i], "rb")
-			uploads.append(s3_pool.upload(vcard_filenames[i], vcard_file, AWS_S3_BUCKET))
+	uploads = []
+	for i in range(len(req_data["group"])):
+		vcard_file = open("/tmp/" + vcard_filenames[i], "rb")
+		uploads.append(s3_pool.upload(vcard_filenames[i], vcard_file, AWS_S3_BUCKET))
 
-		s3_pool.all_completed(uploads)
+	s3_pool.all_completed(uploads)
 
 	twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
