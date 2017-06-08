@@ -92,7 +92,7 @@ def send_group():
 			to="+1" + mobile,
 			from_=TWILIO_FROM_NUMBER,
 			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
-		time.sleep(1)
+		time.sleep(3)
 
 		contact_text = ""
 
@@ -121,7 +121,7 @@ def send_group():
 				from_=TWILIO_FROM_NUMBER,
 				body=contact_text + "Thanks for using Quircl!")
 
-	return jsonify({'test': "hello"}), 200
+	return jsonify({ "success": True, "data": "Contacts successfully transmitted" }), 200
 
 
 def req_err(message):
