@@ -19,6 +19,24 @@ AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
 
 app = Flask(__name__, static_url_path="")
 
+@app.route("/api/get-nearby", methods=['POST'])
+def get_nearby():
+	req_data = request.get_json()
+
+	if "lat" not in req_data:
+		return req_err("No 'lat' field in request data")
+	elif "lon" not in req_data:
+		return req_err("No 'lon' field in request data")
+	elif "fname" not in req_data or len(req_data["fname"]) <= 0:
+		return req_err("No 'fname' field in request data")
+	elif "lname" not in req_data or len(req_data["lname"]) <= 0:
+		return req_err("No 'lname' field in request data")
+	elif "number" not in req_data or len(req_data["number"]) != 10:
+		return req_err("No 'number' field in request data")
+
+
+
+
 @app.route("/api/send-group", methods=['POST'])
 def send_group():
 	req_data = request.get_json()
@@ -34,9 +52,9 @@ def send_group():
 
 	for person in req_data["group"]:
 
-		if "fname" not in person:
+		if "fname" not in person or len(person["fname"]) <= 0 or " " in person["fname"]:
 			return req_err("No 'fname' field in a group member")
-		elif "lname" not in person:
+		elif "lname" not in person or len(person["lname"]) <= 0 or " " in person["lname"]:
 			return req_err("No 'lname' field in a group member (fname: '" + person["fname"] + "')")
 		elif "numbers" not in person:
 			return req_err("No 'numbers' field in a group member (fname: '" + person["fname"] + "', lname: '" + person["lname"] + "')")
@@ -45,7 +63,11 @@ def send_group():
 
 		for number in person["numbers"]:
 
-			if len(number["num"]) != 10:
+			if "type" not in number:
+				return req_err("No 'type' field in a number (fname: '" + person["fname"] + "', lname: '" + person["lname"] + "')")
+			elif "num" not in number:
+				return req_err("No 'num' field in a number (fname: '" + person["fname"] + "', lname: '" + person["lname"] + "', type: '" + number["type"] + "')")
+			elif len(number["num"]) != 10:
 				return req_err("Number must be exactly 10 concatenated digits (fname: '" + person["fname"] + "', lname: '" + person["lname"] + "', number: '" + number["num"] + "')")
 
 			try:
