@@ -74,9 +74,7 @@ def get_nearby():
 			nxt_lat = users[i]["lat"]
 			nxt_lon = users[i]["lon"]
 			
-			
-
-			dist = calc_dist(lat, lon,  nxt_lat, nxt_lon):
+			dist = calc_dist(lat, lon,  nxt_lat, nxt_lon)
 			if	dist <= NEARBY_THRESHOLD_IN_FEET:
 				nearby_users.append(users[i])
 				print("'" + name + "' and '" + users[i]["name"] + "' are near each other! (" + dist + " ft)")
