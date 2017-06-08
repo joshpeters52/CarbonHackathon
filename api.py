@@ -59,7 +59,7 @@ def get_nearby():
 	user_id = name.replace(" ", "") + number
 
 	user_json = { "name": name, "number": number, "lat": lat, "lon": lon }
-	user_exists = db.child("users").child(name + number).get(id_token).val() is not None
+	user_exists = db.child("users").child(user_id).get(id_token).val() is not None
 
 	print("Does the user exist? " + str(user_exists))
 	print("User information: " + str(user_json))
