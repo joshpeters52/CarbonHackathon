@@ -91,8 +91,9 @@ def send_group():
 		
 		
 		while message.status != "delivered":
+			print(message.status)
 			pass
-		
+
 		time.sleep(1)
 
 
