@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, abort, make_response, request
 from twilio.rest import Client
 from pyshorteners import Shortener
+from math import radians, sin, cos, atan2, sqrt
 
 import tinys3
 import os
@@ -8,6 +9,7 @@ import time
 import json
 import random
 import requests
+import pyrebase
 
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -16,6 +18,21 @@ TWILIO_FROM_NUMBER = "+15715703304"
 AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
+
+config = {
+    "apiKey": "AIzaSyBBVOdkBnlh8tiE7FqAp8X5pa1zPTqMH_Q",
+    "authDomain": "quircl-12e1f.firebaseapp.com",
+    "databaseURL": "https://quircl-12e1f.firebaseio.com",
+    "projectId": "quircl-12e1f",
+    "storageBucket": "quircl-12e1f.appspot.com"
+}
+
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+user = auth.sign_in_with_email_and_password("plautzdn@gmail.com", "adminpassword")
+db = firebase.database()
+
+idToken = user['idToken']
 
 app = Flask(__name__, static_url_path="")
 
@@ -27,14 +44,47 @@ def get_nearby():
 		return req_err("No 'lat' field in request data")
 	elif "lon" not in req_data:
 		return req_err("No 'lon' field in request data")
-	elif "fname" not in req_data or len(req_data["fname"]) <= 0:
+	elif "name" not in req_data or len(req_data["name"]) <= 0:
 		return req_err("No 'fname' field in request data")
-	elif "lname" not in req_data or len(req_data["lname"]) <= 0:
-		return req_err("No 'lname' field in request data")
 	elif "number" not in req_data or len(req_data["number"]) != 10:
 		return req_err("No 'number' field in request data")
 
+	name = req_data["name"]
+	number = req_data["number"]
+	lat = req_data["lat"]
+	lon = req_data["lon"]
 
+	user_json = { "name": name, "number": number, "lat": lat, "lon": lon }
+	user_exists = db.child("users").child(name + number).get(idToken).val() is not None
+
+	if user_exists:
+		db.child("users").child(name + number).update(user_json, idToken)
+	else:
+		db.child("users").child(name + number).set(user_json, idToken)
+
+	users = db.child("users").get(id).val()
+
+	nearby_users = []
+	for i in users:
+		if users[i]["name"] is name:
+			continue
+
+		nxt_lat = users[i]["lat"]
+		nxt_lon = users[i]["lon"]
+		
+		if calc_dist(lat, lon,  nxt_lat, nxt_lon):
+			nearby_users.append(users[i])
+
+	return jsonify({ "success": True, "data": nearby_users }), 200
+
+@app.route("/api/remove-from-nearby/<user_id>", methods=['DELETE'])
+def remove_from_nearby(user_id):
+	if user_id is None or len(user_id) <= 10:
+		return req_err("No URL parameter for user id (first name + last name + number)")
+
+	db.child("users").child(user_id).remove(idToken)		
+	
+	return jsonify({ "success": True, "data": "Successfully removed '" + user_id + "' from nearby database"})
 
 
 @app.route("/api/send-group", methods=['POST'])
