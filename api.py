@@ -124,6 +124,7 @@ def send_group():
 def req_err(message):
 	response = jsonify({ "success": False, "data": message })
 	response.status_code = 400
+	print("Error!! MESSAGE: " + message)
 	return response
 
 def create_vcard_str(fname, lname, numbers):
