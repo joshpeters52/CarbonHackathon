@@ -11,7 +11,7 @@ import random
 import requests
 import pyrebase
 
-NEARBY_THRESHOLD_IN_FEET = 200
+NEARBY_THRESHOLD_IN_MILES = 5
 
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
@@ -75,7 +75,7 @@ def get_nearby():
 			nxt_lon = users[i]["lon"]
 			
 			dist = calc_dist(lat, lon,  nxt_lat, nxt_lon)
-			if	dist <= NEARBY_THRESHOLD_IN_FEET:
+			if	dist <= NEARBY_THRESHOLD_IN_MILES:
 				nearby_users.append(users[i])
 				print("'" + name + "' and '" + users[i]["name"] + "' are near each other! (" + str(dist) + " ft)")
 			else:
@@ -260,7 +260,7 @@ def calc_dist(lat1, lon1, lat2, lon2):
 	a = (sin(dlat/2))**2 + cos(lat1) * cos(lat2) * (sin(dlon/2))**2 
 	c = 2 * atan2( sqrt(a), sqrt(1-a) )
 
-	return c * 3961 * 5280
+	return c * 3961
 
 if __name__ == '__main__':
 	app.run(debug=True)
