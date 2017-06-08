@@ -56,26 +56,26 @@ def get_nearby():
 	lat = req_data["lat"]
 	lon = req_data["lon"]
 
+	user_id = name.replace(" ", "") + number
+
 	user_json = { "name": name, "number": number, "lat": lat, "lon": lon }
 	user_exists = db.child("users").child(name + number).get(id_token).val() is not None
 
 	if user_exists:
-		db.child("users").child(name.replace(" ", "") + number).update(user_json, id_token)
+		db.child("users").child(user_id).update(user_json, id_token)
 	else:
-		db.child("users").child(name.replace(" ", "") + number).set(user_json, id_token)
+		db.child("users").child(user_id).set(user_json, id_token)
 
 	users = db.child("users").get(id_token).val()
 
 	nearby_users = []
 	for i in users:
-		if users[i]["name"] is name:
-			continue
-
-		nxt_lat = users[i]["lat"]
-		nxt_lon = users[i]["lon"]
-		
-		if calc_dist(lat, lon,  nxt_lat, nxt_lon):
-			nearby_users.append(users[i])
+		if i != user_id:
+			nxt_lat = users[i]["lat"]
+			nxt_lon = users[i]["lon"]
+			
+			if calc_dist(lat, lon,  nxt_lat, nxt_lon):
+				nearby_users.append(users[i])
 
 	return jsonify({ "success": True, "data": nearby_users }), 200
 
