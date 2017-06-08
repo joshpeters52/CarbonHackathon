@@ -34,7 +34,7 @@ auth = firebase.auth()
 user = auth.sign_in_with_email_and_password("plautzdn@gmail.com", "adminpassword")
 db = firebase.database()
 
-id_token = user['id_token']
+id_token = user['idToken']
 
 app = Flask(__name__, static_url_path="")
 
