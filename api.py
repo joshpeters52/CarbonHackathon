@@ -28,10 +28,6 @@ def send_group():
 	elif "mms" not in req_data:
 		return req_err("No 'mms' field in request data")
 
-	# mms enabled?
-	# hellellelejlej;lw
-	# q;ljlkefjlkwejf
-	# klwefjlkwejlkfjwe
 	mms_enabled = req_data["mms"]
 
 	vcard_filenames = []
@@ -92,7 +88,11 @@ def send_group():
 			to="+1" + mobile,
 			from_=TWILIO_FROM_NUMBER,
 			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
-		time.sleep(3)
+		
+		
+		print(message)
+		time.sleep(1)
+
 
 		contact_text = ""
 
