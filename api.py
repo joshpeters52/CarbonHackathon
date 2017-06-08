@@ -218,8 +218,8 @@ def convert_phone_number(number):
 	return result
 
 def url_shortener(url):
-	shortener = Shortener("Tinyurl")
-	return shortener.short(url)[7:]
+	shortener = Shortener("QrCx")
+	return shortener.short(url)
 
 def generate_quircl():
 	quircls = [ 
