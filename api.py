@@ -188,7 +188,7 @@ def send_group():
 					media_url="https://s3.amazonaws.com/carbonhackathon-quircl/" + filename)
 			else:
 				contact_text += next_fname + " " + next_lname + "\n" + convert_phone_number(next_mobile)
-				contact_text += "\nContact: " + url_shortener("https://s3.amazonaws.com/carbonhackathon-quircl/" + filename) + "\n\n"
+				contact_text += "\nContact: https://s3.amazonaws.com/carbonhackathon-quircl/" + filename + "\n\n"
 
 		if not mms_enabled:
 			twilio_client.messages.create(
