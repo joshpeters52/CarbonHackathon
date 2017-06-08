@@ -229,18 +229,19 @@ def generate_quircl():
 		"Quircl is making the jump to hyperspace...",
 		"\"Houston we have NO problems,\" Quircl explains.",
 		"Quircl is readying the ignition...",
-		"\"'Patience you must have.' -Yoda\" -Quircl",
+		"\"'Patience you must have.'\n-Yoda\"\n-Quircl",
 		"How many Quircls does it take to get your contacts?",
 		"The platypus is a distant relative of the Quircl.",
 		"A group of Quircls is a Quircl Circle.",
 		"To Quircl or not to Quircl? That is the question.",
 		"Quircls like long walks on the beach...",
-		"For just 20 cents a day, you can feed a family of Quircls",
+		"For just 20 cents a day, you can feed a family of Quircls.",
 		"Scientists hate him! Wait to find out what this Quircl did to social circles everywhere!!",
 		"Contrary to popular belief... Quircls actually have 7 arms, not 6.",
 		"Quircls don't care who you voted for.",
-		"Squirtle and Quircl walk into a bar...",
-		"If you or a loved one have been diagnosed with Quircl-syndrome... That's awesome."
+		"A Squirtle and a Quircl walk into a bar...",
+		"If you or a loved one have been diagnosed with Quircl-syndrome... then that's just awesome."
+		"Quircl Quircl Quircl Quircl Quircl Quircl Quircl Quircl."
 		]
 
 	return quircls[random.randint(0, len(quircls) - 1)]
