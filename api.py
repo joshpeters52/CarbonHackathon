@@ -11,6 +11,8 @@ import random
 import requests
 import pyrebase
 
+NEARBY_THRESHOLD_IN_FEET = 200
+
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
 TWILIO_FROM_NUMBER = "+15715703304"
@@ -58,9 +60,9 @@ def get_nearby():
 	user_exists = db.child("users").child(name + number).get(idToken).val() is not None
 
 	if user_exists:
-		db.child("users").child(name + number).update(user_json, idToken)
+		db.child("users").child(name.replace(" ", "") + number).update(user_json, idToken)
 	else:
-		db.child("users").child(name + number).set(user_json, idToken)
+		db.child("users").child(name.replace(" ", "") + number).set(user_json, idToken)
 
 	users = db.child("users").get(id).val()
 
@@ -238,11 +240,21 @@ def generate_quircl():
 		"Contrary to popular belief... Quircls actually have 7 arms, not 6.",
 		"Quircls don't care who you voted for.",
 		"Squirtle and Quircl walk into a bar...",
-		"If you or a loved one have been diagnosed with Quircl-syndrome... That's awesome.",
-		"QUIRCL LIVES MATTER!!!!!"
+		"If you or a loved one have been diagnosed with Quircl-syndrome... That's awesome."
 		]
 
 	return quircls[random.randint(0, len(quircls) - 1)]
+
+def calc_dist(lat1, lon1, lat2, lon2):
+	dlon = radians(lon2 - lon1)
+	dlat = radians(lat2 - lat1)
+
+	lat1 = radians(lat1)
+	lat2 = radians(lat2)	
+
+	a = (sin(dlat/2))**2 + cos(lat1) * cos(lat2) * (sin(dlon/2))**2 
+	c = 2 * atan2( sqrt(a), sqrt(1-a) )
+	return c * 3961 * 5280 <= NEARBY_THRESHOLD_IN_FEET		
 
 if __name__ == '__main__':
 	app.run(debug=True)
