@@ -66,7 +66,6 @@ def send_group():
 
 		if mms_enabled:
 			vcard_str = create_vcard_str(fname, lname, numbers)
-
 			vcard_file = open("/tmp/" + vcard_filename, "w")
 			vcard_file.write(vcard_str)
 			vcard_file.close()
@@ -112,33 +111,13 @@ def send_group():
 					media_url="https://s3.amazonaws.com/carbonhackathon-quircl/" + filename)
 			else:
 				contact_text += next_fname + " " + next_lname + "\n" + convert_phone_number(next_mobile)
-				contact_text += "\nvCard: " + url_shortener("https://s3.amazonaws.com/carbonhackathon-quircl/" + filename) + "\n\n"
+				contact_text += "\nContact: " + url_shortener("https://s3.amazonaws.com/carbonhackathon-quircl/" + filename) + "\n\n"
 
 		if not mms_enabled:
 			twilio_client.messages.create(
 				to="+1" + mobile,
 				from_=TWILIO_FROM_NUMBER,
 				body=contact_text + "Thanks for using Quircl!")
-
-
-
-	# client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-
-	# myfile = open("/tmp/file3.vcf", "w")
-	# myfile.write("BEGIN:VCARD\nVERSION:3.0\nN:Doe;Jane;;;\nFN:Jane Doe\nORG:Example.com Inc.;\nTEL;type=WORK;type=pref:+1 617 555 1212\nEND:VCARD")
-	# myfile.close()
-
-	# myfile = open("/tmp/file3.vcf", "rb")
-	# pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True)
-
-	# r = pool.upload("file3.vcf", myfile, AWS_S3_BUCKET)
-	# r.result()
-
-	# message = client.messages.create(
-	#     to="+14109033502", 
-	#     from_="+14123243487",
-	#     body="This is John Doe!",
-	#     media_url="https://s3.amazonaws.com/carbonhackathon-quircl/file3.vcf")
 
 	return jsonify({'test': "hello"}), 200
 
@@ -155,10 +134,12 @@ def create_vcard_str(fname, lname, numbers):
 	return result + "END:VCARD"
 
 def convert_phone_number(number):
-	result = ""
+	result = "("
 	for i in range(10):
 		result += number[i]
-		if i == 2 or i == 5:
+		if i == 2:
+			result += ") "
+		elif i == 5:
 			result += "-"
 	return result
 
