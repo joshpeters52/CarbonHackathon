@@ -34,7 +34,7 @@ auth = firebase.auth()
 user = auth.sign_in_with_email_and_password("plautzdn@gmail.com", "adminpassword")
 db = firebase.database()
 
-idToken = user['idToken']
+id_token = user['id_token']
 
 app = Flask(__name__, static_url_path="")
 
@@ -57,14 +57,14 @@ def get_nearby():
 	lon = req_data["lon"]
 
 	user_json = { "name": name, "number": number, "lat": lat, "lon": lon }
-	user_exists = db.child("users").child(name + number).get(idToken).val() is not None
+	user_exists = db.child("users").child(name + number).get(id_token).val() is not None
 
 	if user_exists:
-		db.child("users").child(name.replace(" ", "") + number).update(user_json, idToken)
+		db.child("users").child(name.replace(" ", "") + number).update(user_json, id_token)
 	else:
-		db.child("users").child(name.replace(" ", "") + number).set(user_json, idToken)
+		db.child("users").child(name.replace(" ", "") + number).set(user_json, id_token)
 
-	users = db.child("users").get(id).val()
+	users = db.child("users").get(id_token).val()
 
 	nearby_users = []
 	for i in users:
@@ -84,7 +84,7 @@ def remove_from_nearby(user_id):
 	if user_id is None or len(user_id) <= 10:
 		return req_err("No URL parameter for user id (first name + last name + number)")
 
-	db.child("users").child(user_id).remove(idToken)		
+	db.child("users").child(user_id).remove(id_token)		
 	
 	return jsonify({ "success": True, "data": "Successfully removed '" + user_id + "' from nearby database"})
 
