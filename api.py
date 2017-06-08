@@ -139,11 +139,10 @@ def send_group():
 		vcard_filename = fname + "." + lname + "." + mobile + ".vcf"
 		vcard_filenames.append(vcard_filename)
 
-		if mms_enabled:
-			vcard_str = create_vcard_str(fname, lname, numbers)
-			vcard_file = open("/tmp/" + vcard_filename, "w")
-			vcard_file.write(vcard_str)
-			vcard_file.close()
+		vcard_str = create_vcard_str(fname, lname, numbers)
+		vcard_file = open("/tmp/" + vcard_filename, "w")
+		vcard_file.write(vcard_str)
+		vcard_file.close()
 
 	s3_pool = tinys3.Pool(AWS_ACCESS_KEY, AWS_SECRET_KEY, tls=True, size=len(req_data["group"]))
 
