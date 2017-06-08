@@ -90,7 +90,7 @@ def send_group():
 		message = twilio_client.messages.create(
 			to="+1" + mobile,
 			from_=TWILIO_FROM_NUMBER,
-			body="Quircl's magic is brewing... Your contacts will be here shortly!")
+			body=generate_quircl() + "\n\nYour social circle will be ready shortly!")
 
 		contact_text = ""
 
@@ -147,6 +147,30 @@ def url_shortener(url):
 	shortener = Shortener("Tinyurl")
 	return shortener.short(url)[7:]
 
+def generate_quircl():
+	quircls = [ 
+		"Quircl's magic is brewing...",
+		"Quircl says, \"Hang tight earthling!\"",
+		"1,238 Quircls are hard at work!",
+		"Quircl is making the jump to hyperspace...",
+		"\"Houston we have NO problems,\" Quircl explains.",
+		"Quircl is readying the ignition...",
+		"\"'Patience you must have.' -Yoda\" -Quircl",
+		"How many Quircls does it take to get your contacts?",
+		"The platypus is a distant relative of the Quircl.",
+		"A group of Quircls is a Quircl Circle.",
+		"To Quircl or not to Quircl? That is the question.",
+		"Quircls like long walks on the beach...",
+		"For just 20 cents a day, you can feed a family of Quircls",
+		"Scientists hate him! Wait to find out what this Quircl did to social circles everywhere!!",
+		"Contrary to popular belief... Quircls actually have 7 arms, not 6.",
+		"Quircls don't care who you voted for.",
+		"Squirtle and Quircl walk into a bar...",
+		"If you or a loved one have been diagnosed with Quircl-syndrome... That's awesome.",
+		"QUIRCL LIVES MATTER!!!!!"
+		]
+
+	return quircls[random.randint(0, len(quircls) - 1)]
 
 if __name__ == '__main__':
 	app.run(debug=True)
